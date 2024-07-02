@@ -618,7 +618,7 @@ mod tests {
                 validator_verifier.clone(),
             );
 
-            let network_events = NetworkEvents::new(consensus_rx, None);
+            let network_events = NetworkEvents::new(consensus_rx, None, true);
             let network_service_events =
                 NetworkServiceEvents::new(hashmap! {NetworkId::Validator => network_events});
             let (task, receiver) = NetworkTask::new(network_service_events, self_receiver);
@@ -648,7 +648,11 @@ mod tests {
                 Vec::new(),
             )
             .unwrap(),
-            SyncInfo::new(previous_qc.clone(), previous_qc, None),
+            SyncInfo::new(
+                previous_qc.clone(),
+                previous_qc.into_wrapped_ledger_info(),
+                None,
+            ),
         );
         timed_block_on(&runtime, async {
             nodes[0]
@@ -730,7 +734,7 @@ mod tests {
                 validator_verifier.clone(),
             );
 
-            let network_events = NetworkEvents::new(consensus_rx, None);
+            let network_events = NetworkEvents::new(consensus_rx, None, true);
             let network_service_events =
                 NetworkServiceEvents::new(hashmap! {NetworkId::Validator => network_events});
             let (task, receiver) = NetworkTask::new(network_service_events, self_receiver);
@@ -800,7 +804,7 @@ mod tests {
 
         let (peer_mgr_notifs_tx, peer_mgr_notifs_rx) =
             aptos_channel::new(QueueStyle::FIFO, 8, None);
-        let network_events = NetworkEvents::new(peer_mgr_notifs_rx, None);
+        let network_events = NetworkEvents::new(peer_mgr_notifs_rx, None, true);
         let network_service_events =
             NetworkServiceEvents::new(hashmap! {NetworkId::Validator => network_events});
         let (self_sender, self_receiver) = aptos_channels::new_unbounded_test();
